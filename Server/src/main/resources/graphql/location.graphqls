@@ -1,0 +1,24 @@
+scalar Long
+scalar UUID @specifiedBy(url: "https://tools.ietf.org/html/rfc4122")
+
+type Query {
+  cities(countryId: ID!, name: String, page: Int): PageResponseCity
+  countries: [Country!]!
+}
+
+type Country {
+  countryId: UUID!
+  countryName: String!
+}
+
+type City {
+  cityId: UUID!
+  cityName: String!
+}
+
+type PageResponseCity {
+  content: [City!]!
+  totalItems: Long!
+  totalPages: Int!
+  actualPage: Int!
+}

@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    volumes:
+      - pg-db:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -d ${DB_NAME} -U ${DB_USER}
+      interval: 15s
+      timeout: 20s
+      retries: 10
+    ports:
+      - 5432:5432
+  objects:
+    image: minio/minio
+    restart: always
+    environment:
+      - MINIO_ACCES_KEY=${MINIO_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET}
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - minio-data:/data
+volumes:
+  pg-db:
+  minio-data:
