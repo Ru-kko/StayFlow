@@ -10,7 +10,7 @@ public class PageConverter {
         .content(page.getContent())
         .totalItems(page.getTotalElements())
         .totalPages(page.getTotalPages())
-        .actualPage(page.getNumber())
+        .actualPage(page.getNumber() + 1)
         .build();
   }
 }
