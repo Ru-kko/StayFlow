@@ -1,16 +1,16 @@
 package com.stayflow.infrastructure.config;
 
+import java.net.URI;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-
 import lombok.RequiredArgsConstructor;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3Configuration;
 
 @Configuration
 @RequiredArgsConstructor
@@ -18,16 +18,14 @@ public class ObjectStorageConfig {
   private final ApplicationConfiguration props;
 
   @Bean
-  AmazonS3 amazonS3() {
-    AmazonS3Client.builder();
-    AmazonS3 amazonS3 = AmazonS3ClientBuilder
-        .standard()
-        .withCredentials(new AWSStaticCredentialsProvider(
-            new BasicAWSCredentials(props.getAccessKey(), props.getSecretKey())))
-        .withPathStyleAccessEnabled(true)
-        .withEndpointConfiguration(new EndpointConfiguration(props.getEndpoint(), AmazonS3Client.S3_SERVICE_NAME))
+  S3Client amazonS3() {
+    return S3Client.builder()
+        .region(Region.US_EAST_1)
+        .credentialsProvider(StaticCredentialsProvider.create(
+            AwsBasicCredentials.create(props.getAccessKey(), props.getSecretKey())))
+        .endpointOverride(URI.create(props.getEndpoint()))
+        .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
         .build();
-    return amazonS3;
   }
 
   @Bean

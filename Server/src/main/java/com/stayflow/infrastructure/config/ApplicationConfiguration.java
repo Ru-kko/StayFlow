@@ -14,14 +14,14 @@ import lombok.Getter;
 public class ApplicationConfiguration implements ApplicationVariables {
   @Value("${app.page-size}")
   public Integer pageSize;
-  @Value("${app.bucketName}")
+  @Value("${app.bucket-name}")
   private String bucketName;
 
   @Value("${minio.endpoint}")
   private String endpoint;
-  @Value("${minio.accessKey}")
+  @Value("${minio.access-key}")
   private String accessKey;
-  @Value("${minio.secretKey}")
+  @Value("${minio.secret-key}")
   private String secretKey;
 
 }

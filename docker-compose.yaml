@@ -18,8 +18,10 @@ services:
   objects:
     image: minio/minio
     restart: always
+    command: server /data
     environment:
-      - MINIO_ACCES_KEY=${MINIO_KEY}
+      # - MINIO_DOMAIN=127.0.0.1
+      - MINIO_ACCESS_KEY=${MINIO_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET}
     ports:
       - 9000:9000

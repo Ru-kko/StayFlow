@@ -4,31 +4,39 @@ import java.io.InputStream;
 
 import org.springframework.stereotype.Repository;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.stayflow.application.port.out.ApplicationVariables;
 import com.stayflow.application.port.out.ObjectStorage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 @Repository
 @RequiredArgsConstructor
 public class ObjectStorageAdapter implements ObjectStorage {
-  private final AmazonS3 amazonS3;
+  private final S3Client s3Client;
   private final ApplicationVariables props;
 
   @Override
   @SneakyThrows
   public String uploadImage(InputStream data, String content, String name, Long size) {
-    ObjectMetadata metadata = new ObjectMetadata();
+    PutObjectRequest request = PutObjectRequest.builder()
+        .bucket(props.getBucketName())
+        .key(name)
+        .contentType(content)
+        .contentLength(size)
+        .build();
 
-    metadata.setContentType(content);
-    metadata.setContentLength(size);
+    s3Client.putObject(request, RequestBody.fromInputStream(data, size));
 
-    amazonS3.putObject(new PutObjectRequest(props.getBucketName(), name, data, metadata));
-
-    return amazonS3.getUrl(props.getBucketName(), name).toString();
+    return s3Client.utilities()
+        .getUrl(GetUrlRequest.builder()
+            .bucket(props.getBucketName())
+            .key(name)
+            .build())
+        .toString();
   }
 }
