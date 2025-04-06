@@ -48,4 +48,7 @@ public interface JPARoomRepository extends JpaRepository<Room, UUID>, RoomReposi
           ))
       """)
   Page<Room> findNearMe(@Param("lon") Double lon, @Param("lat") Double lat, Pageable page);
+
+  @Query("UPDATE Room r SET r.enabled = true WHERE r.id = :roomId")
+  void softDelete(@Param("roomId") UUID roomId);
 }

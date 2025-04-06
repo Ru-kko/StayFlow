@@ -4,30 +4,31 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.stayflow.application.port.in.RoomUseCase;
 import com.stayflow.application.port.out.ApplicationVariables;
+import com.stayflow.application.port.out.ImageRepository;
+import com.stayflow.application.port.out.ObjectStorage;
 import com.stayflow.application.port.out.RoomRepository;
 import com.stayflow.domain.dto.PageResponse;
+import com.stayflow.domain.table.Image;
 import com.stayflow.domain.table.Room;
 import com.stayflow.util.PageConverter;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService implements RoomUseCase {
   private final RoomRepository roomRepository;
   private final ApplicationVariables props;
-
-  @Override
-  public Room registerRoom(Room room) {
-    // Todo
-    throw new UnsupportedOperationException("Method not implemented yet.");
-  }
+  private final ImageRepository imgRepository;
+  private final ObjectStorage objStorage;
 
   @Override
   public PageResponse<Room> findRoomsNearMe(Double lon, Double lat, Integer page) {
@@ -58,5 +59,22 @@ public class RoomService implements RoomUseCase {
   @Override
   public void deleteRoom(UUID id) {
     roomRepository.softDelete(id);
+  }
+
+  @Override
+  @SneakyThrows
+  public Room registerRoom(Room room, MultipartFile file) {
+    Image imgMetadata = Image.builder()
+        .contentType(file.getContentType())
+        .name(room.getName().concat(".webp"))
+        .build();
+    imgMetadata = imgRepository.save(imgMetadata);
+
+    objStorage.uploadImage(file.getInputStream(), file.getContentType(),
+        "images/".concat(imgMetadata.getImageId().toString()), file.getSize());
+
+    room.setImage(imgMetadata);
+
+    return roomRepository.save(room);
   }
 }

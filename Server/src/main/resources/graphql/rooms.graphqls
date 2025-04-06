@@ -1,0 +1,45 @@
+scalar Upload
+
+extend type Query {
+  findNearMe(lon: Float!, lat: Float!, page: Int): PageResponseRoom
+  findAll(page: Int): PageResponseRoom
+  findIn(cityId: UUID, countryId: UUID): PageResponseRoom
+}
+
+type Mutation {
+  createRoom(data: RoomProps!, image: Upload!): Room
+}
+
+type Image {
+  imageId: UUID!
+  contentType: String!
+  url: String!
+  Name: String!
+}
+
+input RoomProps {
+  name: String!
+  description: String!
+  beds: Int!
+  lon: Float!
+  lat: Float!
+  city: UUID!
+}
+
+type Room {
+  roomId: UUID!
+  name: String!
+  description: String!
+  beds: Int!
+  lon: Float!
+  lat: Float!
+  image: Image!
+  city: City!
+}
+
+type PageResponseRoom {
+  content: [Room!]!
+  totalItems: Long!
+  totalPages: Int!
+  actualPage: Int!
+}
