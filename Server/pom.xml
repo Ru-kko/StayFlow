@@ -24,8 +24,6 @@
 
 
 	<dependencies>
-
-
 		<!-- API -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -91,10 +89,10 @@
 		</dependency>
 		<!-- S3 Object Storage -->
 		<dependency>
-    	<groupId>software.amazon.awssdk</groupId>
-    	<artifactId>s3</artifactId>
-			<version>2.31.16</version>
-  	</dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>8.5.17</version>
+		</dependency>
 		<!-- Tests ignore for mvp -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
