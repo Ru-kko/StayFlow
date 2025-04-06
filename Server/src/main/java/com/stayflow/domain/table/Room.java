@@ -29,7 +29,6 @@ public class Room {
   private String name;
   private String description;
   private Integer beds;
-  private String imageUrl;
 
   /**
    * Location longitude

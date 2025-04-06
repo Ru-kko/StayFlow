@@ -2,6 +2,7 @@ CREATE TABLE image (
   imageId UUID PRIMARY KEY DEFAULT gen_random_uuid (),
   name VARCHAR(255) NOT NULL,
   contentType VARCHAR(255) NOT NULL,
+  url VARCHAR(1024) NOT NULL
 )
 
 CREATE TABLE room (

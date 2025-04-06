@@ -3,10 +3,10 @@ package com.stayflow.domain.table;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
-import org.springframework.data.annotation.Id;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,5 +23,6 @@ public class Image {
   @GeneratedValue
   private UUID imageId;
   private String contentType;
+  private String url;
   private String name;
 }

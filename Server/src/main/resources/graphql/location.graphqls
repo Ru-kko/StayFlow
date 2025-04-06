@@ -14,6 +14,7 @@ type Country {
 type City {
   cityId: UUID!
   cityName: String!
+  country: Country!
 }
 
 type PageResponseCity {
