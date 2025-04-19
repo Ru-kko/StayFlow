@@ -1,6 +1,7 @@
 package com.stayflow.infrastructure.controller;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -20,8 +21,8 @@ public class LocationController {
   private final LocationUseCase locationService;
 
   @QueryMapping
-  public PageResponse<City> cities(@Argument UUID countryId, @Argument String name, @Argument Integer page) {
-    return locationService.getCitiesInConutry(page != null ? page + 1 : 0, name, countryId);
+  public PageResponse<City> cities(@Argument UUID countryId, @Argument String name, @Argument Optional<Integer> page) {
+    return locationService.getCitiesInConutry(page.orElse(1), name, countryId);
   }
 
   @QueryMapping
