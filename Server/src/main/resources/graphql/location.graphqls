@@ -1,8 +1,9 @@
 scalar Long
+scalar PositiveInt
 scalar UUID @specifiedBy(url: "https://tools.ietf.org/html/rfc4122")
 
 type Query {
-  cities(countryId: ID!, name: String, page: Int): PageResponseCity
+  cities(countryId: ID!, name: String, page: PositiveInt): PageResponseCity
   countries: [Country!]!
 }
 

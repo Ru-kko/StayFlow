@@ -25,6 +25,7 @@ public class GraphQlConfig {
     return wiringBuilder -> wiringBuilder
         .scalar(ExtendedScalars.GraphQLLong)
         .scalar(ExtendedScalars.UUID)
+        .scalar(ExtendedScalars.PositiveInt)
         .scalar(GraphQLScalarType.newScalar().name("Upload").coercing(new UploadCoercing()).build());
   }
 

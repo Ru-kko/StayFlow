@@ -29,7 +29,7 @@ public class LocationService implements LocationUseCase {
 
   @Override
   public PageResponse<City> getCitiesInConutry(Integer page, String name, UUID cityId) {
-    Pageable pageReq = PageRequest.of(page, props.getPageSize());
+    Pageable pageReq = PageRequest.of(page - 1, props.getPageSize());
 
     Page<City> pageRes = name == null ?
       cityRepository.findByCountry_countryId(cityId, pageReq) : cityRepository.findByCountryAndName(cityId, normalizeName(name), pageReq);
