@@ -1,0 +1,43 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt" android:drawable="@drawable/splash_logo">
+    <target android:name="background">
+        <aapt:attr name="android:animation">
+            <set>
+                <objectAnimator android:propertyName="scaleX" android:duration="300" android:valueFrom="0" android:valueTo="1" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator android:propertyName="scaleY" android:duration="300" android:valueFrom="0" android:valueTo="1" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+        </aapt:attr>
+    </target>
+    <target android:name="bed">
+        <aapt:attr name="android:animation">
+            <objectAnimator android:propertyName="translateY" android:startOffset="250" android:duration="200" android:valueFrom="85" android:valueTo="0" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="head">
+        <aapt:attr name="android:animation">
+            <objectAnimator android:propertyName="fillAlpha" android:startOffset="300" android:duration="200" android:valueFrom="0" android:valueTo="1" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="pillow">
+        <aapt:attr name="android:animation">
+            <objectAnimator android:propertyName="fillAlpha" android:startOffset="300" android:duration="200" android:valueFrom="0" android:valueTo="1" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="title">
+        <aapt:attr name="android:animation">
+            <objectAnimator android:propertyName="fillAlpha" android:startOffset="396" android:duration="300" android:valueFrom="0" android:valueTo="1" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="mask">
+        <aapt:attr name="android:animation">
+            <objectAnimator android:propertyName="pathData" android:startOffset="700"
+                android:duration="400"
+                android:valueFrom="M 119 0 L 119 240 L 121 240 L 121 0 L 119 0"
+                android:valueTo="M 240 0 L 240 240 L 0 240 L 0 0 L 200 0" android:valueType="pathType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+    <target android:name="visible">
+        <aapt:attr name="android:animation">
+            <objectAnimator android:propertyName="fillAlpha" android:startOffset="700" android:duration="1" android:valueFrom="1" android:valueTo="1" android:valueType="floatType" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        </aapt:attr>
+    </target>
+</animated-vector>
