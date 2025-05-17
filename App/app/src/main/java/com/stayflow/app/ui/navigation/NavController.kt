@@ -8,6 +8,7 @@ import com.stayflow.app.ui.routes.HomeRoute
 import com.stayflow.app.ui.routes.LoginRoute
 import com.stayflow.app.ui.routes.RegisterRoute
 import com.stayflow.app.ui.routes.RoomDetail
+import com.stayflow.app.ui.routes.UserInformationRoute
 
 class NavController(initialRoute: Screen) {
     private val _current = mutableStateOf(getComposableRoute(initialRoute))
@@ -24,6 +25,7 @@ class NavController(initialRoute: Screen) {
             is Screen.Login -> LoginRoute()
             is Screen.Register -> RegisterRoute()
             is Screen.Home -> HomeRoute()
+            is Screen.UserInfo -> UserInformationRoute()
             is Screen.RoomDetail -> RoomDetail(screen.roomId)
         }
     }

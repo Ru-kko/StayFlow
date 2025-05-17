@@ -35,7 +35,7 @@ fun BellowNavigation(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
         ) {
             RoundedIconButton(
-                onClick = {},
+                onClick = { nav.navigate(Screen.UserInfo) },
                 painter = painterResource(R.drawable.user),
                 contentDescription = "Go to Account",
                 size = 50.dp,
