@@ -264,6 +264,7 @@ class RoomDetail(private val roomId: UUID) : ComposableRoute {
                 reserveDates = ReservationRequest(it.first, it.second, roomId)
             }
             if (reserveDates != null && roomData != null) {
+                Spacer(modifier = Modifier.padding(vertical = 20.dp))
                 RequestBtn(reserveDates!!, roomData!!)
             }
         }
