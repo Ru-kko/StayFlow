@@ -4,15 +4,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -143,4 +148,44 @@ fun RoundedIconButton(
         )
     }
 
+}
+
+@Composable
+fun BigIconButton(
+    text: String,
+    icon: Painter,
+    modifier: Modifier = Modifier,
+    backgroundColor: Color = AppTheme.palette.Green,
+    contentColor: Color = AppTheme.palette.Surface0,
+    style: TextStyle = Typography.displaySmall,
+    size: Dp = 200.dp,
+    onClick: () -> Unit = {},
+) {
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = modifier
+            .width(size)
+            .height(size)
+            .clip(RoundedCornerShape(10))
+            .background(backgroundColor)
+            .padding(10.dp)
+            .clickable { onClick() }
+    ) {
+        Icon(
+            painter = icon,
+            tint = contentColor,
+            contentDescription = text,
+            modifier = Modifier
+                .width(size - 20.dp - (style.fontSize.value.dp + 5.dp))
+                .height(size - 20.dp - (style.fontSize.value.dp + 5.dp)),
+        )
+        Text(
+            text = text,
+            style = style,
+            fontWeight = FontWeight.ExtraBold,
+            color = contentColor,
+            modifier = Modifier.padding(top = 5.dp)
+        )
+    }
 }
