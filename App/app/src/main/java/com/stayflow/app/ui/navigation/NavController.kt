@@ -9,6 +9,7 @@ import com.stayflow.app.ui.routes.HomeRoute
 import com.stayflow.app.ui.routes.LoginRoute
 import com.stayflow.app.ui.routes.RegisterRoute
 import com.stayflow.app.ui.routes.RoomDetail
+import com.stayflow.app.ui.routes.SelfReservationsRoute
 import com.stayflow.app.ui.routes.UserInformationRoute
 
 class NavController(initialRoute: Screen) {
@@ -28,6 +29,7 @@ class NavController(initialRoute: Screen) {
             is Screen.Home -> HomeRoute()
             is Screen.UserInfo -> UserInformationRoute()
             is Screen.AdminPanel -> AdminPanelRoute()
+            is Screen.SelfReservations -> SelfReservationsRoute()
             is Screen.RoomDetail -> RoomDetail(screen.roomId)
         }
     }

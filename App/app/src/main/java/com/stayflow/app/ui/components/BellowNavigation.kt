@@ -49,7 +49,7 @@ fun BellowNavigation(modifier: Modifier = Modifier) {
                 padding = 8.dp
             )
             RoundedIconButton(
-                onClick = {},
+                onClick = { nav.navigate(Screen.SelfReservations) },
                 painter = painterResource(R.drawable.cart),
                 contentDescription = "Go to Cart",
                 size = 50.dp,

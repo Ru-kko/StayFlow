@@ -8,5 +8,6 @@ sealed class Screen(val route: String) {
     data object Home : Screen("home")
     data object UserInfo : Screen("user-info")
     data object AdminPanel : Screen("admin-panel")
+    data object SelfReservations : Screen("self-reservations")
     data class RoomDetail(val roomId: UUID) : Screen("room/$roomId")
 }
