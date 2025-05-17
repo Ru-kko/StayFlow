@@ -51,10 +51,7 @@ fun NavHost(currentRoute: ComposableRoute) {
             ) { route ->
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .verticalScroll(rememberScrollState())
-                        .padding(bottom = if (currentRoute.requireNav) 100.dp else 0.dp)
+                        .fillMaxSize()
                         .weight(1f)
                 ) {
                     route.BodyContent(this)

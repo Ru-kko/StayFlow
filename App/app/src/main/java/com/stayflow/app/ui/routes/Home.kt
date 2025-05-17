@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -68,7 +70,10 @@ class HomeRoute : ComposableRoute {
     override fun BodyContent(scope: BoxScope) {
         val nav = LocalNavController.current
         Column(
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 10.dp)
+                .padding(bottom = 100.dp)
         ) {
             StayflowDropdown(
                 options = listOf(

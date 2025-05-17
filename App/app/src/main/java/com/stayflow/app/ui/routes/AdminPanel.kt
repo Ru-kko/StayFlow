@@ -28,7 +28,7 @@ class AdminPanelRoute : ComposableRoute {
             icon = painterResource(R.drawable.users),
             backgroundColor = AppTheme.palette.Red,
             modifier = Modifier
-                .padding(10.dp)
+                .padding(20.dp)
                 .align(Alignment.TopStart)
         )
         BigIconButton(
@@ -36,7 +36,8 @@ class AdminPanelRoute : ComposableRoute {
             backgroundColor = AppTheme.palette.Peach,
             icon = painterResource(R.drawable.home),
             modifier = Modifier
-                .padding(10.dp)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 150.dp)
                 .align(Alignment.BottomEnd)
         )
     }
