@@ -1,8 +1,11 @@
 package com.stayflow.app.ui.components
 
+import android.view.ViewTreeObserver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
@@ -23,12 +28,20 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -211,7 +224,8 @@ fun DateRange(
             drawableLeft = painterResource(R.drawable.calendar),
             text = df.format(rangeState.selectedStartDateMillis ?: Date()),
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 20.dp).width(200.dp)
+                .padding(vertical = 8.dp, horizontal = 20.dp)
+                .width(200.dp)
         )
         Text(
             text = "To",
@@ -229,7 +243,8 @@ fun DateRange(
             drawableLeft = painterResource(R.drawable.calendar),
             text = df.format(rangeState.selectedEndDateMillis ?: Date()),
             modifier = Modifier
-                .padding(vertical = 8.dp, horizontal = 20.dp).width(200.dp)
+                .padding(vertical = 8.dp, horizontal = 20.dp)
+                .width(200.dp)
         )
     }
 }
@@ -318,4 +333,151 @@ private fun RangePickerContents(
             }
         },
     )
+}
+
+@Composable
+fun ClearTextInput(
+    value: String,
+    hint: String,
+    style: TextStyle = Typography.displayMedium,
+    color: Color = AppTheme.palette.Text,
+    hintColor: Color = AppTheme.palette.Subtext1,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var text by remember { mutableStateOf(value) }
+    var isEditable by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val view = LocalView.current
+
+    LaunchedEffect(isEditable) {
+        if (isEditable) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        } else {
+            focusRequester.freeFocus()
+            keyboardController?.hide()
+        }
+    }
+
+    DisposableEffect(view) {
+        val rootView = view.rootView
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            val rect = android.graphics.Rect()
+            rootView.getWindowVisibleDisplayFrame(rect)
+            val screenHeight = rootView.height
+            val keypadHeight = screenHeight - rect.bottom
+            if (keypadHeight < screenHeight * 0.15) {
+                isEditable = false
+            }
+        }
+
+        rootView.viewTreeObserver.addOnGlobalLayoutListener(listener)
+
+        onDispose {
+            rootView.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            BasicTextField(
+                value = text,
+                onValueChange = {
+                    text = it
+                    onValueChange(it)
+                },
+                maxLines = 1,
+                singleLine = true,
+                enabled = isEditable,
+                readOnly = !isEditable,
+                textStyle = style.merge(color = color),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        isEditable = false
+                        keyboardController?.hide()
+                    }
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester)
+            )
+            Text(
+                text = hint,
+                fontSize = 12.sp,
+                color = hintColor
+            )
+        }
+
+        Text(
+            text = "Edit",
+            color = AppTheme.palette.Sky,
+            style = Typography.headlineMedium,
+            fontWeight = FontWeight.Normal,
+            modifier = Modifier.clickable {
+                isEditable = true
+                text = ""
+            }
+        )
+    }
+}
+
+@Composable
+fun SimpleOutlinedInput(
+    value: String,
+    style: TextStyle = Typography.titleLarge,
+    password: Boolean = false,
+    color: Color = AppTheme.palette.Text,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = 3.dp,
+                color = AppTheme.palette.Text,
+                shape = RoundedCornerShape(20)
+            )
+            .padding(0.dp, 0.dp)
+    ) {
+        TextField(
+            value = value,
+            onValueChange = onValueChange,
+            visualTransformation = if (!password) VisualTransformation.None else
+                PasswordVisualTransformation(),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = AppTheme.palette.Subtext1,
+                    style = style,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .background(Color.Transparent)
+                        .fillMaxWidth()
+                )
+            },
+            textStyle = style.merge(TextStyle(color = color)),
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                errorContainerColor = Color.Transparent,
+            ),
+            modifier = Modifier
+                .padding(0.dp)
+                .background(color = Color.Transparent)
+                .align(Alignment.Center)
+                .fillMaxWidth()
+        )
+    }
 }
