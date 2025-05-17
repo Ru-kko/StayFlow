@@ -3,6 +3,7 @@ package com.stayflow.app.ui.navigation
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.staticCompositionLocalOf
+import com.stayflow.app.ui.routes.AdminPanelRoute
 import com.stayflow.app.ui.routes.ComposableRoute
 import com.stayflow.app.ui.routes.HomeRoute
 import com.stayflow.app.ui.routes.LoginRoute
@@ -26,6 +27,7 @@ class NavController(initialRoute: Screen) {
             is Screen.Register -> RegisterRoute()
             is Screen.Home -> HomeRoute()
             is Screen.UserInfo -> UserInformationRoute()
+            is Screen.AdminPanel -> AdminPanelRoute()
             is Screen.RoomDetail -> RoomDetail(screen.roomId)
         }
     }

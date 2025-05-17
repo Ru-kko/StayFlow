@@ -40,6 +40,7 @@ class HomeRoute : ComposableRoute {
 
     @Composable
     override fun HeaderContent(scope: BoxScope) = with(scope) {
+        val nav = LocalNavController.current
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
@@ -52,7 +53,7 @@ class HomeRoute : ComposableRoute {
             )
             Spacer(Modifier.padding(horizontal = 5.dp))
             FilledButton(
-                onClick = {},
+                onClick = { nav.navigate(Screen.AdminPanel) },
                 text = "Admin",
                 backgroundColor = AppTheme.palette.Rosewater,
                 drawableLeft = painterResource(R.drawable.admin),

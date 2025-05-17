@@ -8,6 +8,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,22 +42,22 @@ fun NavHost(currentRoute: ComposableRoute) {
                 currentRoute.HeaderContent(this)
             }
 
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(bottom = if (currentRoute.requireNav) 100.dp else 0.dp)
-                    .fillMaxWidth()
-            ) {
-                val scope = this
-                AnimatedContent(
-                    targetState = currentRoute,
-                    label = "RouteChange",
-                    transitionSpec = {
-                        fadeIn(tween(200)) togetherWith fadeOut(tween(200))
-                    },
-                ) { route ->
-                    route.BodyContent(scope)
+            AnimatedContent(
+                targetState = currentRoute,
+                label = "RouteChange",
+                transitionSpec = {
+                    fadeIn(tween(200)) togetherWith fadeOut(tween(200))
+                },
+            ) { route ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(bottom = if (currentRoute.requireNav) 100.dp else 0.dp)
+                        .weight(1f)
+                ) {
+                    route.BodyContent(this)
                 }
             }
         }
@@ -73,9 +74,9 @@ fun NavHost(currentRoute: ComposableRoute) {
                                 .0f to Color.Transparent,
                                 .4f to AppTheme.palette.Surface1,
                                 1.0f to AppTheme.palette.Surface1,
+                            )
                         )
-                    )
-            )
+                )
             BellowNavigation(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
