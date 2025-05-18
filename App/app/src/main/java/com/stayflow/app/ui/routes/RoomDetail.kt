@@ -64,12 +64,12 @@ class RoomDetail(private val roomId: UUID) : ComposableRoute {
         delay(200)
         roomData = Room(
             roomId = roomId,
-            name = "Test Room",
+            name = "Duplex Penthouse",
             description = lorem,
             image = Image(
                 imageId = UUID.randomUUID(),
-                url = "https://i0.wp.com/plopdo.com/wp-content/uploads/2021/11/feature-pic" +
-                        ".jpg?fit=537%2C322&ssl=1",
+                url = "https://a0.muscache.com/im/pictures/miso/Hosting-635983960492703673" +
+                        "/original/97bf944e-231c-487d-acc0-8ee6903c4e44.jpeg?im_w=720",
                 name = "Test Image",
                 contentType = "image/jpeg"
             ),

@@ -88,22 +88,27 @@ class HomeRoute : ComposableRoute {
             )
             RoomCard(
                 onClick = { nav.navigate(Screen.RoomDetail(UUID.randomUUID())) },
-                name = "Hello",
+                name = "Loft Element Building",
                 description = lorem,
-                location = "Bogota, Colombia"
+                location = "Medellin, Colombia",
+                image = "https://a0.muscache.com/im/pictures/miso/Hosting-1147453586748162997" +
+                        "/original/1d875070-8c5f-4104-9a9f-d190d369dbb5.jpeg?im_w=720"
             )
             RoomCard(
                 onClick = { nav.navigate(Screen.RoomDetail(UUID.randomUUID())) },
-                name = "Hello",
+                name = "Near Beach Suite",
                 description = lorem,
-                location = "Bogota, Colombia"
+                location = "Cancun, Mexico",
+                image = "https://a0.muscache.com/im/pictures/0d49420e-5f36-464e-bdbf-7086d6a1c291" +
+                        ".jpg?im_w=1440"
             )
             RoomCard(
                 onClick = { nav.navigate(Screen.RoomDetail(UUID.randomUUID())) },
-                name = "Hello",
+                name = "Duplex Penthouse",
                 description = lorem,
                 location = "Bogota, Colombia",
-                image = "https://images.photowall.com/products/52990/wise-lion.jpg?h=699&q=85"
+                image = "https://a0.muscache.com/im/pictures/airflow/Hosting-635983960492703673" +
+                        "/original/130b33c2-1515-453f-9f56-62ff584e2d3b.jpg?im_w=1440"
             )
         }
     }

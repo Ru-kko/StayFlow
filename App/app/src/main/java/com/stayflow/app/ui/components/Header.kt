@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -74,11 +73,14 @@ fun Header(
                     )
                     .height(heightAnim)
                     .fillMaxWidth()
+                    .graphicsLayer {
+                        clip = false
+                    }
             ) {
                 HeaderLogo(
                     showCircle = logoBackGround,
                     modifier = Modifier
-                        .absoluteOffset(x = 20.dp, y = (-20).dp)
+                        .absoluteOffset(x = 20.dp, y = (-10).dp)
                         .align(Alignment.TopEnd)
                 )
                 Box(
@@ -147,7 +149,7 @@ fun HeaderLogo(
                     scaleY = 2f
                 }
                 .size(animatedSize)
-                .offset(x = 10.dp, y = (-20).dp)
+                .offset(x = 10.dp, y = (-15).dp)
                 .background(AppTheme.palette.Sky, shape = CircleShape)
         )
 

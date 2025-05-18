@@ -18,7 +18,6 @@ class Startup : ComponentActivity() {
         installSplashScreen().setKeepOnScreenCondition {
             false
         }
-
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb()),
             navigationBarStyle = SystemBarStyle.dark(Color.Transparent.toArgb())
