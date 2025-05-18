@@ -15,6 +15,7 @@ CREATE TABLE room (
   cityId UUID NOT NULL,
   imageId UUID,
   enabled BOOLEAN DEFAULT TRUE,
+  price DECIMAL(20, 3) NOT NULL,
   CONSTRAINT fk_room_city FOREIGN KEY (cityId) REFERENCES city(cityId) ON DELETE CASCADE,
   CONSTRAINT fk_image FOREIGN KEY (imageId) REFERENCES image(imageId)
 );

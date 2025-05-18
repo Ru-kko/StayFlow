@@ -18,7 +18,7 @@ services:
   objects:
     image: minio/minio
     restart: always
-    command: server /data
+    command: server /data --console-address ":9001"
     environment:
       # - MINIO_DOMAIN=127.0.0.1
       - MINIO_ACCESS_KEY=${MINIO_KEY}

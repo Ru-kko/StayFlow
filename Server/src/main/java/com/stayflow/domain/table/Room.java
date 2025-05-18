@@ -1,5 +1,6 @@
 package com.stayflow.domain.table;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
@@ -29,6 +30,7 @@ public class Room {
   private String name;
   private String description;
   private Integer beds;
+  private BigDecimal price;
 
   /**
    * Location longitude
@@ -50,4 +52,15 @@ public class Room {
   
   @Builder.Default
   private Boolean enabled = true; 
+
+  
+  public void radiants() {
+    this.lon = Math.toRadians(this.lon);
+    this.lat = Math.toRadians(this.lat);
+  }
+
+  public void degrees() {
+    this.lon = Math.toDegrees(this.lon);
+    this.lat = Math.toDegrees(this.lat);
+  }
 }

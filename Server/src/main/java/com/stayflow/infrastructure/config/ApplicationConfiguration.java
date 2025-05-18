@@ -16,6 +16,8 @@ public class ApplicationConfiguration implements ApplicationVariables {
   public Integer pageSize;
   @Value("${app.bucket-name}")
   private String bucketName;
+  @Value("${app.images.url-prefix}")
+  private String imagesPrefix;
 
   @Value("${minio.endpoint}")
   private String endpoint;

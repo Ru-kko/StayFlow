@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.stayflow.domain.table.Room;
 
 public interface RoomRepository {
+  Page<Room> findAll(Pageable page);
   Page<Room> findByCity_CityId(UUID cityId, Pageable page);
   Page<Room> findByCity_Country_countryId(UUID counttyId, Pageable page);
   Page<Room> findNearMe(Double lon, Double lat, Pageable page);

@@ -1,5 +1,6 @@
 package com.stayflow.domain.dto;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -18,4 +19,5 @@ public class RoomCreateDto {
   private Double lon;
   private Double lat;
   private UUID city;
+  private BigDecimal price;
 }

@@ -16,6 +16,7 @@ import com.stayflow.domain.table.City;
 import com.stayflow.domain.table.Room;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,21 +24,61 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RoomController {
   private final RoomUseCase roomService;
+
   @QueryMapping
-  public PageResponse<Room> findNearMe(@Argument float lon, @Argument float lat, @Argument Integer page) {
-    return null;
+  public PageResponse<Room> findRoomsNearMe(@Argument Double lon, @Argument Double lat, @Argument Optional<Integer> page) {
+    return roomService.findRoomsNearMe(lon, lat, page.orElse(1));
   }
 
   @QueryMapping
-  public PageResponse<Room> findAll(@Argument Integer page) {
-    return null;
+  public PageResponse<Room> findAllRooms(@Argument Optional<Integer> page) {
+    return roomService.findAll(page.orElse(1));
   }
 
   @QueryMapping
-  public PageResponse<Room> findIn(@Argument Optional<UUID> cityId, @Argument Optional<UUID> countryId) {
-    return null;
+  public PageResponse<Room> findRoomsIn(@Argument Optional<UUID> cityId, @Argument UUID countryId,
+      @Argument Optional<Integer> page) {
+    if (cityId.isPresent())
+      return roomService.findInCity(cityId.get(), page.orElse(1));
+    return roomService.findByCountry(countryId, page.orElse(1));
   }
 
+  @QueryMapping
+  @SneakyThrows
+  public Room findRoom(@Argument UUID id) {
+    return roomService.findById(id);
+  }
+
+  @MutationMapping
+  @SneakyThrows
+  public Room updateRoomImage(@Argument UUID id, @Argument MultipartFile image) {
+    return roomService.updateRoomImage(id, image);
+  }
+
+  @MutationMapping
+  public Boolean deleteRoom(@Argument UUID id) {
+    roomService.deleteRoom(id);
+    return true;
+  }
+
+  @MutationMapping
+  @SneakyThrows
+  public Room updateRoom(@Argument UUID id, @Argument RoomCreateDto data) {
+    Room toUpdate = Room.builder()
+        .roomId(id)
+        .description(data.getDescription())
+        .beds(data.getBeds())
+        .name(data.getName())
+        .lon(data.getLon())
+        .lat(data.getLat())
+        .price(data.getPrice())
+        .city(City.builder().cityId(data.getCity()).build())
+        .build();
+
+    return roomService.updateRoom(toUpdate);
+  }
+
+  @SneakyThrows
   @MutationMapping
   public Room createRoom(@Argument RoomCreateDto data, @Argument MultipartFile image) {
     Room toSave = Room.builder()
@@ -46,9 +87,10 @@ public class RoomController {
         .name(data.getName())
         .lon(data.getLon())
         .lat(data.getLat())
+        .price(data.getPrice())
         .city(City.builder().cityId(data.getCity()).build())
         .build();
-    
+
     return roomService.registerRoom(toSave, image);
   }
 }

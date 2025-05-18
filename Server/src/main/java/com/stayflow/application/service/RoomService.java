@@ -1,6 +1,6 @@
 package com.stayflow.application.service;
 
-import java.util.Optional;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -17,6 +17,7 @@ import com.stayflow.application.port.out.RoomRepository;
 import com.stayflow.domain.dto.PageResponse;
 import com.stayflow.domain.table.Image;
 import com.stayflow.domain.table.Room;
+import com.stayflow.infrastructure.error.StayFlowError;
 import com.stayflow.util.PageConverter;
 
 import lombok.RequiredArgsConstructor;
@@ -31,9 +32,24 @@ public class RoomService implements RoomUseCase {
   private final ObjectStorage objStorage;
 
   @Override
-  public PageResponse<Room> findRoomsNearMe(Double lon, Double lat, Integer page) {
+  public PageResponse<Room> findAll(Integer page) {
     Pageable pageable = PageRequest.of(page - 1, props.getPageSize());
-    Page<Room> roomPage = roomRepository.findNearMe(lon, lat, pageable);
+    Page<Room> roomPage = roomRepository.findAll(pageable);
+    for (Room r : roomPage.getContent()) {
+      r.degrees();
+    }
+
+    return PageConverter.<Room>buildPageResponse(roomPage);
+  }
+
+  @Override
+  public PageResponse<Room> findRoomsNearMe(Double lon, Double lat, Integer page) {
+    Pageable pageable = PageRequest.of(page, props.getPageSize());
+    Page<Room> roomPage = roomRepository.findNearMe(Math.toRadians(lon), Math.toRadians(lat), pageable);
+    for (Room r : roomPage) {
+      r.degrees();
+    }
+
     return PageConverter.<Room>buildPageResponse(roomPage);
   }
 
@@ -41,6 +57,10 @@ public class RoomService implements RoomUseCase {
   public PageResponse<Room> findByCountry(UUID countryId, Integer page) {
     Pageable pageable = PageRequest.of(page - 1, props.getPageSize());
     Page<Room> roomPage = roomRepository.findByCity_Country_countryId(countryId, pageable);
+    for (Room r : roomPage.getContent()) {
+      r.degrees();
+    }
+
     return PageConverter.<Room>buildPageResponse(roomPage);
   }
 
@@ -48,12 +68,19 @@ public class RoomService implements RoomUseCase {
   public PageResponse<Room> findInCity(UUID cityId, Integer page) {
     Pageable pageable = PageRequest.of(page - 1, props.getPageSize());
     Page<Room> roomPage = roomRepository.findByCity_CityId(cityId, pageable);
+    for (Room r : roomPage.getContent()) {
+      r.degrees();
+    }
+
     return PageConverter.<Room>buildPageResponse(roomPage);
   }
 
   @Override
-  public Optional<Room> findById(UUID id) {
-    return roomRepository.findByRoomId(id);
+  public Room findById(UUID id) throws StayFlowError {
+    Room res = roomRepository.findByRoomId(id).orElseThrow(() -> new StayFlowError(404, "Room not found"));
+
+    res.degrees();
+    return res;
   }
 
   @Override
@@ -64,17 +91,77 @@ public class RoomService implements RoomUseCase {
   @Override
   @SneakyThrows
   public Room registerRoom(Room room, MultipartFile file) {
+    Image imgMetadata = createImage(file, room.getName());
+    room.setImage(imgMetadata);
+    room.radiants();
+    validate(room);
+
+    Room saved = roomRepository.save(room);
+    saved.degrees();
+
+    return saved;
+  }
+
+  @Override
+  public Room updateRoom(Room room) throws StayFlowError {
+    Room existingRoom = roomRepository.findByRoomId(room.getRoomId())
+    .orElseThrow(() -> new StayFlowError(404, "Room not found"));
+    
+    room.radiants();
+    if (room.getName() != null)
+      existingRoom.setName(room.getName());
+    if (room.getDescription() != null)
+      existingRoom.setDescription(room.getDescription());
+    if (room.getBeds() != null)
+      existingRoom.setBeds(room.getBeds());
+    if (room.getCity() != null)
+      existingRoom.setCity(room.getCity());
+    if (room.getPrice() != null)
+      existingRoom.setPrice(room.getPrice());
+    if (room.getLon() != null)
+      existingRoom.setLon(room.getLon());
+    if (room.getLat() != null)
+      existingRoom.setLon(room.getLat());
+    
+    validate(existingRoom);
+    return roomRepository.save(existingRoom);
+  }
+
+  @Override
+  @SneakyThrows
+  public Room updateRoomImage(UUID roomId, MultipartFile image) throws StayFlowError {
+    Room room = roomRepository.findByRoomId(roomId)
+        .orElseThrow(() -> new StayFlowError(404, "Room not found"));
+    Image imgMetadata = createImage(image, room.getName());
+
+    room.setImage(imgMetadata);
+    return roomRepository.save(room);
+  }
+
+  @SneakyThrows
+  private Image createImage(MultipartFile image, String roomName) {
     Image imgMetadata = Image.builder()
-        .contentType(file.getContentType())
-        .name(room.getName().concat(".webp"))
+        .contentType(image.getContentType())
+        .name(roomName.concat(".webp"))
         .build();
     imgMetadata = imgRepository.save(imgMetadata);
 
-    objStorage.uploadImage(file.getInputStream(), file.getContentType(),
-        "images/".concat(imgMetadata.getImageId().toString()), file.getSize());
+    objStorage.uploadImage(
+        image.getInputStream(),
+        image.getContentType(),
+        "images/".concat(imgMetadata.getImageId().toString()),
+        image.getSize()
+    );
 
-    room.setImage(imgMetadata);
+    imgMetadata.setUrl(props.getImagesPrefix().concat(imgMetadata.getImageId().toString()));
+    return imgRepository.save(imgMetadata);
+  }
 
-    return roomRepository.save(room);
+  private void validate(Room room) throws StayFlowError {
+    if (room.getBeds() < 1)
+      throw new StayFlowError(400, "A room should have a least of one bed");
+    
+    if (room.getPrice().compareTo(new BigDecimal(25)) < 1)
+      throw new StayFlowError(400, "The room price is too cheap");
   }
 }
