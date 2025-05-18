@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -48,6 +49,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.stayflow.app.R
@@ -129,7 +131,7 @@ fun StayFlowInputField(
                 color = colors.Overlay2,
                 style = Typography.bodySmall,
                 fontSize = 20.sp,
-                modifier = Modifier.padding(bottom = 5.dp)
+                modifier = Modifier.padding(bottom = 5.dp, start = 20.dp)
             )
         }
     }
@@ -480,4 +482,23 @@ fun SimpleOutlinedInput(
                 .fillMaxWidth()
         )
     }
+}
+
+@Composable
+fun BulledItem(
+    value: Boolean,
+    onToggle: () -> Unit,
+    size: Dp = 20.dp,
+    modifier: Modifier = Modifier,
+) {
+    val shape = RoundedCornerShape(10)
+
+    Box(
+        modifier = modifier
+            .size(size)
+            .background(if (value) AppTheme.palette.Sky else AppTheme.palette.Mantle, shape)
+            .border(1.dp, AppTheme.palette.Text, shape = shape)
+            .clip(shape)
+            .clickable { onToggle() }
+    )
 }
