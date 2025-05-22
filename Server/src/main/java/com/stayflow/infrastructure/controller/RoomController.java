@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +57,7 @@ public class RoomController {
   }
 
   @MutationMapping
+  @Secured({"ROLE_ADMIN", "ROLE_OWNER"})
   public Boolean deleteRoom(@Argument UUID id) {
     roomService.deleteRoom(id);
     return true;
@@ -63,6 +65,7 @@ public class RoomController {
 
   @MutationMapping
   @SneakyThrows
+  @Secured({"ROLE_ADMIN", "ROLE_OWNER"})
   public Room updateRoom(@Argument UUID id, @Argument RoomCreateDto data) {
     Room toUpdate = Room.builder()
         .roomId(id)
@@ -80,6 +83,7 @@ public class RoomController {
 
   @SneakyThrows
   @MutationMapping
+  @Secured({"ROLE_ADMIN", "ROLE_OWNER"})
   public Room createRoom(@Argument RoomCreateDto data, @Argument MultipartFile image) {
     Room toSave = Room.builder()
         .description(data.getDescription())

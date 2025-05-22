@@ -1,0 +1,42 @@
+extend type Mutation {
+  loginUser(creds: UserLogin!): TokenResponse!
+  registerUser(user: UserRegister!): TokenResponse!
+}
+
+extend type Query {
+  me: UserData!
+}
+
+input UserLogin {
+  email: String!
+  password: String!
+}
+
+input UserRegister {
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+}
+
+enum Role {
+  GUEST
+  USER
+  ADMIN
+  OWNER
+}
+
+type TokenResponse {
+  token: String!
+  user: UserData!
+  expiresIn: Long!
+  issuedAt: Long!
+}
+
+type UserData {
+  userId: UUID!
+  email: String!
+  firstName: String!
+  lastName: String!
+  role: Role!
+}

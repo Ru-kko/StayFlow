@@ -26,4 +26,8 @@ public class ApplicationConfiguration implements ApplicationVariables {
   @Value("${minio.secret-key}")
   private String secretKey;
 
+  @Value("${app.jwt.secret}")
+  private String jwtSecret;
+  @Value("${app.jwt.expiration}")
+  private Long jwtExpiration;
 }
