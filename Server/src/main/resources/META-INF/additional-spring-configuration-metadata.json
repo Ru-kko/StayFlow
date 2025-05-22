@@ -29,6 +29,16 @@
       "name": "app.images.url-prefix",
       "type": "java.lang.String",
       "description": "Images endpoint prefix"
+    },
+    {
+      "name": "app.jwt.expiration",
+      "type": "java.lang.Long",
+      "description": "JWT expiration time in seconds"
+    },
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "JWT secret"
     }
   ]
 }
