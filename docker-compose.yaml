@@ -23,11 +23,40 @@ services:
       # - MINIO_DOMAIN=127.0.0.1
       - MINIO_ACCESS_KEY=${MINIO_KEY}
       - MINIO_SECRET_KEY=${MINIO_SECRET}
-    ports:
-      - 9000:9000
       - 9001:9001
     volumes:
       - minio-data:/data
+  server:
+    build:
+      context: ./Server
+    restart: always
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - PORT=8080
+      - MINIO_HOST=objects
+      - MINIO_PORT=9000
+      - MINIO_KEY=${MINIO_KEY}
+      - MINIO_SECRET=${MINIO_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      - IMAGE_URL_PREFIX=http://localhost/assets/
+  nginx:
+    image: nginx:alpine
+    restart: always
+    environment:
+      - SERVER=server:8080
+      - OBJECTS=objects:9000
+      - SERVER_NAME=localhost
+    volumes:
+      - ./net/nginx.conf:/etc/nginx/templates/default.conf.template:ro
+    ports:
+      - 80:80
+    depends_on:
+      - server
+      - objects
 volumes:
   pg-db:
   minio-data:
