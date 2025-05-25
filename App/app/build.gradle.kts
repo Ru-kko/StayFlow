@@ -6,9 +6,24 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.serialization.json)
 }
 
+
 android {
+    fun getProp(key: String): String {
+        return if (project.hasProperty(key)) {
+            project.property(key).toString()
+        } else {
+            val localProps = Properties()
+            val localFile = rootProject.file("local.properties")
+            if (localFile.exists()) {
+                localProps.load(localFile.inputStream())
+                localProps.getProperty(key, "")
+            } else ""
+        }
+    }
+
     namespace = "com.stayflow.app"
     compileSdk = 35
 
@@ -19,11 +34,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        val localProperties = Properties().apply {
-            load(rootProject.file("local.properties").inputStream())
-        }
+        val apiUrl = getProp("API_URL")
+        buildConfigField("String", "API_URL", "\"$apiUrl\"")
 
-        val mapsApiKey = localProperties.getProperty("MAPS_API_KEY") ?: ""
+        val mapsApiKey = getProp("MAPS_API_KEY")
         buildConfigField("String", "MAPS_API_KEY", "\"$mapsApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -69,6 +83,11 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
+    implementation(libs.ktor.client)
+    implementation(libs.serialization.json)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.content.negotiation)
+    implementation(libs.ktor.serialization.json)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
