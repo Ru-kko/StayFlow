@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
@@ -46,6 +47,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
@@ -67,6 +69,7 @@ import java.util.Date
 fun StayFlowInputField(
     value: String,
     onValueChange: (String) -> Unit,
+    keyboardType: KeyboardType = KeyboardType.Text,
     password: Boolean = false,
     placeholder: String?,
     leadingIcon: Painter? = null,
@@ -80,6 +83,9 @@ fun StayFlowInputField(
         TextField(
             value = value,
             onValueChange = onValueChange,
+            keyboardOptions = KeyboardOptions(
+                keyboardType = keyboardType
+            ),
             visualTransformation = if (!password) VisualTransformation.None else
                 PasswordVisualTransformation(),
             placeholder = {
@@ -115,6 +121,7 @@ fun StayFlowInputField(
                 unfocusedContainerColor = Color.Transparent,
                 disabledContainerColor = Color.Transparent,
                 errorContainerColor = Color.Transparent,
+                cursorColor = colors.Mantle,
             ),
             modifier = Modifier
                 .background(color = Color.Transparent, shape = RoundedCornerShape(50))
