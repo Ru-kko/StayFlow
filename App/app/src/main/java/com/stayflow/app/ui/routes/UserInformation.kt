@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.stayflow.app.domain.Role
-import com.stayflow.app.domain.User
+import com.stayflow.app.domain.model.Role
+import com.stayflow.app.domain.model.User
 import com.stayflow.app.ui.components.ClearTextInput
 import com.stayflow.app.ui.components.FilledButton
 import com.stayflow.app.ui.components.HeaderText
@@ -32,8 +32,9 @@ import com.stayflow.app.ui.theme.AppTheme
 import com.stayflow.app.ui.theme.Typography
 import kotlinx.coroutines.delay
 import java.util.UUID
+import javax.inject.Inject
 
-class UserInformationRoute : ComposableRoute {
+class UserInformationRoute @Inject constructor() : ComposableRoute {
     override val height = mutableStateOf(80.dp)
     private var user by mutableStateOf<User?>(null)
     private var isLoading by mutableStateOf(true)

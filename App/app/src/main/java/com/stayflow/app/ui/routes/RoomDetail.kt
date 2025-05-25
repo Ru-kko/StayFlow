@@ -31,10 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.stayflow.app.R
-import com.stayflow.app.domain.City
-import com.stayflow.app.domain.Country
-import com.stayflow.app.domain.Image
-import com.stayflow.app.domain.Room
+import com.stayflow.app.domain.model.City
+import com.stayflow.app.domain.model.Country
+import com.stayflow.app.domain.model.Image
+import com.stayflow.app.domain.model.Room
 import com.stayflow.app.ui.components.DateRange
 import com.stayflow.app.ui.components.FilledButton
 import com.stayflow.app.ui.components.IconText
@@ -47,6 +47,7 @@ import kotlinx.coroutines.delay
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
+import javax.inject.Inject
 
 data class ReservationRequest(
     val from: LocalDate,
@@ -54,9 +55,10 @@ data class ReservationRequest(
     val roomId: UUID
 )
 
-class RoomDetail(private val roomId: UUID) : ComposableRoute {
+class RoomDetail @Inject constructor() : ConfigurableComposableRoute<UUID> {
     override val logoBackGround = true
     override val height = mutableStateOf(250.dp)
+    private lateinit var roomId: UUID
     private var roomData by mutableStateOf<Room?>(null)
     private var isLoading by mutableStateOf(true)
 
@@ -87,6 +89,10 @@ class RoomDetail(private val roomId: UUID) : ComposableRoute {
             )
         )
         isLoading = false
+    }
+
+    override fun setProperties(props: UUID) {
+        this.roomId = props
     }
 
     @Composable

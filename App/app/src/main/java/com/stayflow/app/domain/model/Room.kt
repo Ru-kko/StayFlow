@@ -1,4 +1,4 @@
-package com.stayflow.app.domain
+package com.stayflow.app.domain.model
 
 import java.math.BigDecimal
 import java.util.UUID

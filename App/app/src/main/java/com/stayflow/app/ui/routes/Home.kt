@@ -17,16 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.stayflow.app.R
 import com.stayflow.app.ui.components.FilledButton
 import com.stayflow.app.ui.components.HeaderText
 import com.stayflow.app.ui.components.Option
 import com.stayflow.app.ui.components.RoomCard
 import com.stayflow.app.ui.components.StayflowDropdown
-import com.stayflow.app.ui.navigation.LocalNavController
-import com.stayflow.app.ui.navigation.Screen
+import com.stayflow.app.ui.navigation.NavController
 import com.stayflow.app.ui.theme.AppTheme
 import java.util.UUID
+import javax.inject.Inject
 
 const val lorem = "Lorem ipsum dolor sit amet consectetur adipiscing elit dapibus, eleifend" +
         "praesent lobortis taciti porta proin quis, feugiat est volutpat curae vulputate" +
@@ -35,14 +36,14 @@ const val lorem = "Lorem ipsum dolor sit amet consectetur adipiscing elit dapibu
         " integer est nibh dapibus luctus sapien vehicula, vulputate accumsan aliquet eu " +
         "pulvinar dignissim volutpat velit, penatibus montes sagittis eget class rutrum pretium ante."
 
-class HomeRoute : ComposableRoute {
+class HomeRoute @Inject constructor() : ComposableRoute {
     override val height: MutableState<Dp> = mutableStateOf(120.dp)
     override val requireNav: Boolean = true
     override val logoBackGround: Boolean = false
 
     @Composable
     override fun HeaderContent(scope: BoxScope) = with(scope) {
-        val nav = LocalNavController.current
+        val nav = hiltViewModel<NavController>()
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
@@ -55,7 +56,7 @@ class HomeRoute : ComposableRoute {
             )
             Spacer(Modifier.padding(horizontal = 5.dp))
             FilledButton(
-                onClick = { nav.navigate(Screen.AdminPanel) },
+                onClick = { nav.navigate(AdminPanelRoute::class.java) },
                 text = "Admin",
                 backgroundColor = AppTheme.palette.Rosewater,
                 drawableLeft = painterResource(R.drawable.admin),
@@ -68,7 +69,7 @@ class HomeRoute : ComposableRoute {
 
     @Composable
     override fun BodyContent(scope: BoxScope) {
-        val nav = LocalNavController.current
+        val nav = hiltViewModel<NavController>()
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
@@ -87,7 +88,7 @@ class HomeRoute : ComposableRoute {
                     .padding(vertical = 10.dp)
             )
             RoomCard(
-                onClick = { nav.navigate(Screen.RoomDetail(UUID.randomUUID())) },
+                onClick = { nav.navigate(RoomDetail::class.java, UUID.randomUUID()) },
                 name = "Loft Element Building",
                 description = lorem,
                 location = "Medellin, Colombia",
@@ -95,7 +96,7 @@ class HomeRoute : ComposableRoute {
                         "/original/1d875070-8c5f-4104-9a9f-d190d369dbb5.jpeg?im_w=720"
             )
             RoomCard(
-                onClick = { nav.navigate(Screen.RoomDetail(UUID.randomUUID())) },
+                onClick = { nav.navigate(RoomDetail::class.java, UUID.randomUUID()) },
                 name = "Near Beach Suite",
                 description = lorem,
                 location = "Cancun, Mexico",
@@ -103,7 +104,7 @@ class HomeRoute : ComposableRoute {
                         ".jpg?im_w=1440"
             )
             RoomCard(
-                onClick = { nav.navigate(Screen.RoomDetail(UUID.randomUUID())) },
+                onClick = { nav.navigate(RoomDetail::class.java, UUID.randomUUID()) },
                 name = "Duplex Penthouse",
                 description = lorem,
                 location = "Bogota, Colombia",
@@ -112,5 +113,4 @@ class HomeRoute : ComposableRoute {
             )
         }
     }
-
 }

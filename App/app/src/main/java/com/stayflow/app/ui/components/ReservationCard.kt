@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.stayflow.app.R
-import com.stayflow.app.domain.Reservation
+import com.stayflow.app.domain.model.Reservation
 import com.stayflow.app.ui.theme.AppTheme
 import com.stayflow.app.ui.theme.Typography
 import java.time.LocalDate

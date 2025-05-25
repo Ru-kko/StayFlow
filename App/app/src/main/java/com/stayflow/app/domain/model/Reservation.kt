@@ -1,4 +1,4 @@
-package com.stayflow.app.domain
+package com.stayflow.app.domain.model
 
 import java.time.LocalDate
 import java.util.UUID

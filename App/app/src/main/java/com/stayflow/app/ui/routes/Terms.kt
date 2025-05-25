@@ -17,8 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.stayflow.app.ui.components.HeaderText
 import com.stayflow.app.ui.theme.AppTheme
 import com.stayflow.app.ui.theme.Typography
+import javax.inject.Inject
 
-class TermsRoute : ComposableRoute {
+class TermsRoute @Inject constructor() : ComposableRoute {
     override val height = mutableStateOf(80.dp)
     override val requireNav = false
 

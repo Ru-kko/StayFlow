@@ -1,5 +1,6 @@
 package com.stayflow.app.ui.routes
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,15 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.stayflow.app.R
+import com.stayflow.app.presentation.screens.LoginViewModel
 import com.stayflow.app.ui.components.FilledButton
 import com.stayflow.app.ui.components.HeaderText
 import com.stayflow.app.ui.components.StayFlowInputField
-import com.stayflow.app.ui.navigation.LocalNavController
-import com.stayflow.app.ui.navigation.Screen
+import com.stayflow.app.ui.navigation.NavController
 import com.stayflow.app.ui.theme.AppTheme
 import com.stayflow.app.ui.theme.Typography
+import javax.inject.Inject
 
-class LoginRoute : ComposableRoute {
+class LoginRoute @Inject constructor() : ComposableRoute {
     override val height = mutableStateOf(100.dp)
     override val logoBackGround = true
     override val requireNav = false
@@ -34,7 +36,8 @@ class LoginRoute : ComposableRoute {
 
     @Composable
     override fun BodyContent(scope: BoxScope) = with(scope) {
-        val navController = LocalNavController.current
+        val navController = hiltViewModel<NavController>()
+        val loginViewModel = hiltViewModel<LoginViewModel>()
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -43,22 +46,22 @@ class LoginRoute : ComposableRoute {
                 .padding(horizontal = 15.dp, vertical = 5.dp)
         ) {
             StayFlowInputField(
-                value = "",
-                onValueChange = {},
+                value = loginViewModel.email,
+                onValueChange = { loginViewModel.onEmailChange(it) },
                 placeholder = "Email",
                 leadingIcon = painterResource(R.drawable.user)
             )
             Spacer(modifier = Modifier.padding(20.dp))
             StayFlowInputField(
-                value = "",
-                onValueChange = {},
+                value = loginViewModel.password,
+                onValueChange = { loginViewModel.onPasswordChange(it) },
                 password = true,
                 placeholder = "Password",
                 leadingIcon = painterResource(R.drawable.key)
             )
             Spacer(modifier = Modifier.padding(20.dp))
             FilledButton(
-                onClick = { navController.navigate(Screen.Home) },
+                onClick = { loginViewModel.login() },
                 text = "Sign In",
                 backgroundColor = AppTheme.palette.Rosewater,
                 textColor = AppTheme.palette.Overlay0,
@@ -69,7 +72,7 @@ class LoginRoute : ComposableRoute {
             Text(text = "or", style = Typography.bodySmall, color = AppTheme.palette.Text)
             Spacer(modifier = Modifier.padding(5.dp))
             TextButton(
-                onClick = { navController.navigate(Screen.Register) },
+                onClick = { navController.navigate(RegisterRoute::class.java) },
                 modifier = Modifier.padding(0.dp)
             ) {
                 Text(

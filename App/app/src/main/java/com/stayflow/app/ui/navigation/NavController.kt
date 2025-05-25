@@ -1,67 +1,58 @@
 package com.stayflow.app.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.staticCompositionLocalOf
-import com.stayflow.app.ui.routes.AdminPanelRoute
+import androidx.lifecycle.ViewModel
 import com.stayflow.app.ui.routes.ComposableRoute
-import com.stayflow.app.ui.routes.HomeRoute
+import com.stayflow.app.ui.routes.ConfigurableComposableRoute
 import com.stayflow.app.ui.routes.LoginRoute
-import com.stayflow.app.ui.routes.RegisterRoute
-import com.stayflow.app.ui.routes.RoomDetail
-import com.stayflow.app.ui.routes.SelfReservationsRoute
-import com.stayflow.app.ui.routes.TermsRoute
-import com.stayflow.app.ui.routes.UserInformationRoute
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class NavController(initialRoute: Screen) {
-    private val _current = mutableStateOf(getComposableRoute(initialRoute))
-    private val backStack = mutableListOf<Screen>()
-    private val screen = mutableStateOf(initialRoute)
+@HiltViewModel
+class NavController @Inject constructor(
+    private val routeMap: Map<Class<out ComposableRoute>, ComposableRoute>
+) : ViewModel() {
+    private val _current = mutableStateOf(routeMap[LoginRoute::class.java]!!)
     val current: State<ComposableRoute> = _current
 
-    private val _headerHeight = mutableStateOf(getComposableRoute(initialRoute).height)
-    private val _logoBackGround = mutableStateOf(getComposableRoute(initialRoute).logoBackGround)
+    private val _headerHeight = mutableStateOf(current.value.height)
+    private val _logoBackGround = mutableStateOf(current.value.logoBackGround)
 
-
-    private fun getComposableRoute(screen: Screen): ComposableRoute {
-        return when (screen) {
-            is Screen.Login -> LoginRoute()
-            is Screen.Register -> RegisterRoute()
-            is Screen.Home -> HomeRoute()
-            is Screen.UserInfo -> UserInformationRoute()
-            is Screen.AdminPanel -> AdminPanelRoute()
-            is Screen.SelfReservations -> SelfReservationsRoute()
-            is Screen.Terms -> TermsRoute()
-            is Screen.RoomDetail -> RoomDetail(screen.roomId)
+    fun <T : ComposableRoute> navigate(clazz: Class<T>) {
+        val route = routeMap[clazz]
+        if (route == null) {
+            Log.w("Router", "Please configure route ${clazz.simpleName} injection")
+            return
         }
+
+        navigate(route)
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun <T, R : ConfigurableComposableRoute<T>> navigate(
+        clazz: Class<out R>,
+        props: T
+    ) {
+        if  (routeMap[clazz] == current.value) return
 
-    fun navigate(screen: Screen) {
-        if (screen.route == this.screen.value.route) return
+        val route = routeMap[clazz]
+        if (route == null) {
+            Log.w("Router", "Please configure route ${clazz.simpleName} injection")
+            return
+        }
 
-        backStack.add(this.screen.value)
-        val screenDestination = getComposableRoute(screen)
-        this.screen.value = screen
-        _current.value = screenDestination
-        _headerHeight.value = screenDestination.height
-        _logoBackGround.value = screenDestination.logoBackGround
+        if (route is ConfigurableComposableRoute<*>)
+            (route as ConfigurableComposableRoute<T>).setProperties(props)
+
+        navigate(route)
     }
 
-    fun goBack() {
-        if (backStack.isEmpty()) return
+    private fun navigate(route: ComposableRoute) {
+        _current.value = route
 
-        val previous = backStack[backStack.lastIndex]
-        backStack.removeAt(backStack.lastIndex)
-
-        val screenDestination = getComposableRoute(previous)
-        this.screen.value = previous
-        _current.value = screenDestination
-        _headerHeight.value = screenDestination.height
-        _logoBackGround.value = screenDestination.logoBackGround
+        _headerHeight.value = route.height
+        _logoBackGround.value = route.logoBackGround
     }
-}
-
-val LocalNavController = staticCompositionLocalOf<NavController> {
-    error("NavController not provided")
 }

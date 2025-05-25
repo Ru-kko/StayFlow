@@ -17,3 +17,7 @@ interface ComposableRoute {
     val requireNav: Boolean
         get() = true
 }
+
+interface ConfigurableComposableRoute<T> : ComposableRoute {
+    fun setProperties(props: T)
+}

@@ -17,16 +17,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.stayflow.app.ui.components.BulledItem
 import com.stayflow.app.ui.components.FilledButton
 import com.stayflow.app.ui.components.HeaderText
 import com.stayflow.app.ui.components.StayFlowInputField
-import com.stayflow.app.ui.navigation.LocalNavController
-import com.stayflow.app.ui.navigation.Screen
+import com.stayflow.app.ui.navigation.NavController
 import com.stayflow.app.ui.theme.AppTheme
 import com.stayflow.app.ui.theme.Typography
+import javax.inject.Inject
 
-class RegisterRoute : ComposableRoute {
+class RegisterRoute @Inject constructor() : ComposableRoute {
     override val height = mutableStateOf(70.dp)
     override val logoBackGround = true
     override val requireNav = false
@@ -38,7 +39,7 @@ class RegisterRoute : ComposableRoute {
 
     @Composable
     override fun BodyContent(scope: BoxScope) {
-        val navController = LocalNavController.current
+        val navController = hiltViewModel<NavController>()
         var acceptedTerms by remember { mutableStateOf(false) }
 
         Column(
@@ -106,12 +107,12 @@ class RegisterRoute : ComposableRoute {
                     style = Typography.bodyMedium,
                     modifier = Modifier
                         .padding(start = 5.dp)
-                        .clickable { navController.navigate(Screen.Terms) },
+                        .clickable { navController.navigate(TermsRoute::class.java) },
                 )
             }
             Spacer(modifier = Modifier.padding(20.dp))
             FilledButton(
-                onClick = { navController.navigate(Screen.Home) },
+                onClick = {  },
                 text = "Sign In",
                 backgroundColor = AppTheme.palette.Flamingo,
                 textColor = AppTheme.palette.Overlay0,

@@ -17,14 +17,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.stayflow.app.R
-import com.stayflow.app.ui.navigation.LocalNavController
-import com.stayflow.app.ui.navigation.Screen
+import com.stayflow.app.ui.navigation.NavController
+import com.stayflow.app.ui.routes.HomeRoute
+import com.stayflow.app.ui.routes.SelfReservationsRoute
+import com.stayflow.app.ui.routes.UserInformationRoute
 import com.stayflow.app.ui.theme.AppTheme
 
 @Composable
 fun BellowNavigation(modifier: Modifier = Modifier) {
-    val nav = LocalNavController.current
+    val nav = hiltViewModel<NavController>()
 
     NavigationBarBackground(modifier) {
         Row(
@@ -35,21 +38,21 @@ fun BellowNavigation(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
         ) {
             RoundedIconButton(
-                onClick = { nav.navigate(Screen.UserInfo) },
+                onClick = { nav.navigate(UserInformationRoute::class.java) },
                 painter = painterResource(R.drawable.user),
                 contentDescription = "Go to Account",
                 size = 50.dp,
                 padding = 4.dp,
             )
             RoundedIconButton(
-                onClick = { nav.navigate(Screen.Home) },
+                onClick = { nav.navigate(HomeRoute::class.java) },
                 painter = painterResource(R.drawable.home),
                 contentDescription = "Go to Home",
                 size = 80.dp,
                 padding = 8.dp
             )
             RoundedIconButton(
-                onClick = { nav.navigate(Screen.SelfReservations) },
+                onClick = { nav.navigate(SelfReservationsRoute::class.java) },
                 painter = painterResource(R.drawable.cart),
                 contentDescription = "Go to Cart",
                 size = 50.dp,

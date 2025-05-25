@@ -12,8 +12,9 @@ import com.stayflow.app.R
 import com.stayflow.app.ui.components.BigIconButton
 import com.stayflow.app.ui.components.HeaderText
 import com.stayflow.app.ui.theme.AppTheme
+import javax.inject.Inject
 
-class AdminPanelRoute : ComposableRoute {
+class AdminPanelRoute @Inject constructor() : ComposableRoute {
     override val height = mutableStateOf(80.dp)
 
     @Composable

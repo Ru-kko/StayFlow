@@ -11,21 +11,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.stayflow.app.domain.City
-import com.stayflow.app.domain.Country
-import com.stayflow.app.domain.Image
-import com.stayflow.app.domain.Reservation
-import com.stayflow.app.domain.Role
-import com.stayflow.app.domain.Room
-import com.stayflow.app.domain.User
+import com.stayflow.app.domain.model.City
+import com.stayflow.app.domain.model.Country
+import com.stayflow.app.domain.model.Image
+import com.stayflow.app.domain.model.Reservation
+import com.stayflow.app.domain.model.Role
+import com.stayflow.app.domain.model.Room
+import com.stayflow.app.domain.model.User
 import com.stayflow.app.ui.components.HeaderText
 import com.stayflow.app.ui.components.ReservationCard
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.util.UUID
+import javax.inject.Inject
 
 
-class SelfReservationsRoute : ComposableRoute {
+class SelfReservationsRoute @Inject constructor() : ComposableRoute {
     override val height = mutableStateOf(80.dp)
 
     @Composable

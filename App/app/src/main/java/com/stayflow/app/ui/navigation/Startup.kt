@@ -5,14 +5,17 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.stayflow.app.ui.components.CatppucinProvider
+import com.stayflow.app.ui.components.NavHost
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class Startup : ComponentActivity() {
+class Startup: ComponentActivity() {
+    private val navController: NavController by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         installSplashScreen().setKeepOnScreenCondition {
@@ -25,7 +28,7 @@ class Startup : ComponentActivity() {
 
         setContent {
             CatppucinProvider {
-                MainNavigation(Screen.Login)
+                NavHost(navController.current.value)
             }
         }
     }
