@@ -28,7 +28,6 @@ enum Role {
 
 type TokenResponse {
   token: String!
-  user: UserData!
   expiresIn: Long!
   issuedAt: Long!
 }

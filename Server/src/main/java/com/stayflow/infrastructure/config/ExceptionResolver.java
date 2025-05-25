@@ -1,9 +1,6 @@
 package com.stayflow.infrastructure.config;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.graphql.execution.DataFetcherExceptionResolver;
+import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.stereotype.Component;
 
 import com.stayflow.infrastructure.error.StayFlowError;
@@ -11,22 +8,22 @@ import com.stayflow.infrastructure.error.StayFlowError;
 import graphql.GraphQLError;
 import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
-import reactor.core.publisher.Mono;
 
 @Component
-public class ExceptionResolver implements DataFetcherExceptionResolver {
+public class ExceptionResolver extends DataFetcherExceptionResolverAdapter  {
   @Override
-  public Mono<List<GraphQLError>> resolveException(Throwable ex, DataFetchingEnvironment env) {
-    if (!(ex instanceof StayFlowError)) {
-      return Mono.empty();
+  public GraphQLError resolveToSingleError(Throwable ex, DataFetchingEnvironment env) {
+    if (!(ex.getCause() instanceof StayFlowError)) {
+      return null;
     }
 
-    StayFlowError e = (StayFlowError) ex;
+    StayFlowError e = (StayFlowError) ex.getCause();
     GraphQLError error = GraphqlErrorBuilder.newError(env)
       .message(e.getMessage())
-      .extensions(Map.of("code", e.getCode()))
+      .errorType(e.getCode())
+      .path(env.getExecutionStepInfo().getPath())
       .build();
 
-    return Mono.just(List.of(error));
+    return error;
   }  
 }

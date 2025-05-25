@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TokenResponse {
   private String token;
-  private UserData user;
   private Long expiresIn;
   private Long issuedAt;
 }

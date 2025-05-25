@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 
 import com.stayflow.application.port.out.UserRepository;
+import com.stayflow.domain.ErrorTypes;
 import com.stayflow.domain.table.User;
 import com.stayflow.infrastructure.adapter.persistence.repository.JPAUserRepository;
 import com.stayflow.infrastructure.error.StayFlowError;
@@ -46,7 +47,7 @@ public class JPAUSerRepositoryAdapter implements UserRepository {
     }
     String sqlState = ((org.hibernate.exception.ConstraintViolationException) rootCause).getSQLState();
     if ("23505".equals(sqlState)) {
-      throw new StayFlowError(400, "Already exists an user with this email");
+      throw new StayFlowError(ErrorTypes.BAD_REQUEST, "Already exists an user with this email");
     }
 
     throw e;

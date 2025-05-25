@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.stayflow.application.port.in.UserUseCase;
 import com.stayflow.application.port.out.UserRepository;
+import com.stayflow.domain.ErrorTypes;
 import com.stayflow.domain.dto.UserRegister;
 import com.stayflow.domain.role.Role;
 import com.stayflow.domain.security.UserData;
@@ -25,7 +26,7 @@ public class UserService implements UserUseCase {
     Optional<User> res = userRepository.findById(id);
 
     if (res.isEmpty()) {
-      throw new StayFlowError(404, "User not found");
+      throw new StayFlowError(ErrorTypes.NOT_FOUND, "User not found");
     }
 
     return UserData.builder()
@@ -42,7 +43,7 @@ public class UserService implements UserUseCase {
     Optional<User> res = userRepository.findByEmail(email);
 
     if (res.isEmpty()) {
-      throw new StayFlowError(404, "User not found");
+      throw new StayFlowError(ErrorTypes.NOT_FOUND, "User not found");
     }
 
     return res.get();
@@ -68,7 +69,7 @@ public class UserService implements UserUseCase {
     Optional<User> res = userRepository.findById(UUID.fromString(id));
 
     if (res.isEmpty()) {
-      throw new StayFlowError(404, "User not found");
+      throw new StayFlowError(ErrorTypes.NOT_FOUND, "User not found");
     }
 
     return res.get();
@@ -78,13 +79,13 @@ public class UserService implements UserUseCase {
     final String emailRegexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 
     if (user.getEmail() == null || !user.getEmail().matches(emailRegexp))
-      throw new StayFlowError(400, "Email is invalid");
+      throw new StayFlowError(ErrorTypes.BAD_REQUEST, "Email is invalid");
 
     if (user.getFirstName() == null || user.getFirstName().isEmpty())
-      throw new StayFlowError(400, "First name is invalid");
+      throw new StayFlowError(ErrorTypes.BAD_REQUEST, "First name is invalid");
 
     if (user.getLastName() == null || user.getLastName().isEmpty())
-      throw new StayFlowError(400, "Last name is invalid");
+      throw new StayFlowError(ErrorTypes.BAD_REQUEST, "Last name is invalid");
   }
 
 }

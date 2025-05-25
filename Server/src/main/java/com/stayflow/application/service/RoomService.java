@@ -14,6 +14,7 @@ import com.stayflow.application.port.out.ApplicationVariables;
 import com.stayflow.application.port.out.ImageRepository;
 import com.stayflow.application.port.out.ObjectStorage;
 import com.stayflow.application.port.out.RoomRepository;
+import com.stayflow.domain.ErrorTypes;
 import com.stayflow.domain.dto.PageResponse;
 import com.stayflow.domain.table.Image;
 import com.stayflow.domain.table.Room;
@@ -77,7 +78,7 @@ public class RoomService implements RoomUseCase {
 
   @Override
   public Room findById(UUID id) throws StayFlowError {
-    Room res = roomRepository.findByRoomId(id).orElseThrow(() -> new StayFlowError(404, "Room not found"));
+    Room res = roomRepository.findByRoomId(id).orElseThrow(() -> new StayFlowError(ErrorTypes.NOT_FOUND, "Room not found"));
 
     res.degrees();
     return res;
@@ -105,7 +106,7 @@ public class RoomService implements RoomUseCase {
   @Override
   public Room updateRoom(Room room) throws StayFlowError {
     Room existingRoom = roomRepository.findByRoomId(room.getRoomId())
-    .orElseThrow(() -> new StayFlowError(404, "Room not found"));
+    .orElseThrow(() -> new StayFlowError(ErrorTypes.NOT_FOUND, "Room not found"));
     
     room.radiants();
     if (room.getName() != null)
@@ -131,7 +132,7 @@ public class RoomService implements RoomUseCase {
   @SneakyThrows
   public Room updateRoomImage(UUID roomId, MultipartFile image) throws StayFlowError {
     Room room = roomRepository.findByRoomId(roomId)
-        .orElseThrow(() -> new StayFlowError(404, "Room not found"));
+        .orElseThrow(() -> new StayFlowError(ErrorTypes.NOT_FOUND, "Room not found"));
     Image imgMetadata = createImage(image, room.getName());
 
     room.setImage(imgMetadata);
@@ -141,7 +142,7 @@ public class RoomService implements RoomUseCase {
   @SneakyThrows
   private Image createImage(MultipartFile image, String roomName) {
     Image imgMetadata = Image.builder()
-        .contentType(image.getContentType())
+        .contentType(image.getContentType() == null ? "image/webp" : image.getContentType())
         .name(roomName.concat(".webp"))
         .build();
     imgMetadata = imgRepository.save(imgMetadata);
@@ -159,9 +160,9 @@ public class RoomService implements RoomUseCase {
 
   private void validate(Room room) throws StayFlowError {
     if (room.getBeds() < 1)
-      throw new StayFlowError(400, "A room should have a least of one bed");
+      throw new StayFlowError(ErrorTypes.BAD_REQUEST, "A room should have a least of one bed");
     
     if (room.getPrice().compareTo(new BigDecimal(25)) < 1)
-      throw new StayFlowError(400, "The room price is too cheap");
+      throw new StayFlowError(ErrorTypes.BAD_REQUEST, "The room price is too cheap");
   }
 }

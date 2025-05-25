@@ -6,6 +6,7 @@ import com.stayflow.application.port.in.JWTUseCase;
 import com.stayflow.application.port.in.SessionUseCase;
 import com.stayflow.application.port.in.UserUseCase;
 import com.stayflow.application.port.out.OutPasswordEncoder;
+import com.stayflow.domain.ErrorTypes;
 import com.stayflow.domain.dto.UserRegister;
 import com.stayflow.domain.security.TokenClaims;
 import com.stayflow.domain.security.TokenResponse;
@@ -43,7 +44,7 @@ public class SessionService implements SessionUseCase {
     User user = userService.findByEmail(login.getEmail());
 
     if (!encoder.matches(login.getPassword(), user.getPassword()))
-      throw new StayFlowError(401, "Password is invalid");
+      throw new StayFlowError(ErrorTypes.INVALID_CREDENTIALS, "Password is invalid");
 
     return tokenService.buildToken(UserData.fromUser(user));
   }
