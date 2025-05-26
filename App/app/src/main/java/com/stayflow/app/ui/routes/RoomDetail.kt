@@ -57,6 +57,7 @@ data class ReservationRequest(
 
 class RoomDetail @Inject constructor() : ConfigurableComposableRoute<UUID> {
     override val logoBackGround = true
+    override val propClas = UUID::class.java
     override val height = mutableStateOf(250.dp)
     private lateinit var roomId: UUID
     private var roomData by mutableStateOf<Room?>(null)
