@@ -10,14 +10,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.stayflow.app.presentation.screens.RegisterViewModel
 import com.stayflow.app.ui.components.BulledItem
 import com.stayflow.app.ui.components.FilledButton
 import com.stayflow.app.ui.components.HeaderText
@@ -40,7 +38,7 @@ class RegisterRoute @Inject constructor() : ComposableRoute {
     @Composable
     override fun BodyContent(scope: BoxScope) {
         val navController = hiltViewModel<NavController>()
-        var acceptedTerms by remember { mutableStateOf(false) }
+        val registerViewModel = hiltViewModel<RegisterViewModel>()
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,16 +47,16 @@ class RegisterRoute @Inject constructor() : ComposableRoute {
                 .padding(top = 10.dp)
         ) {
             StayFlowInputField(
-                value = "",
-                onValueChange = {},
+                value = registerViewModel.firstName,
+                onValueChange = { registerViewModel.firstName = it },
                 placeholder = "First Name",
                 style = Typography.headlineSmall,
                 bellowHint = true
             )
             Spacer(modifier = Modifier.padding(10.dp))
             StayFlowInputField(
-                value = "",
-                onValueChange = {},
+                value = registerViewModel.lastName,
+                onValueChange = { registerViewModel.lastName = it },
                 password = true,
                 placeholder = "Last Name",
                 style = Typography.headlineSmall,
@@ -71,16 +69,16 @@ class RegisterRoute @Inject constructor() : ComposableRoute {
                     .padding(vertical = 20.dp, horizontal = 20.dp)
             )
             StayFlowInputField(
-                value = "",
-                onValueChange = {},
+                value = registerViewModel.email,
+                onValueChange = { registerViewModel.email = it },
                 placeholder = "Email",
                 style = Typography.headlineSmall,
                 bellowHint = true
             )
             Spacer(modifier = Modifier.padding(10.dp))
             StayFlowInputField(
-                value = "",
-                onValueChange = {  },
+                value = registerViewModel.password,
+                onValueChange = { registerViewModel.password = it },
                 password = true,
                 placeholder = "Password",
                 style = Typography.headlineSmall,
@@ -90,10 +88,12 @@ class RegisterRoute @Inject constructor() : ComposableRoute {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(horizontal = 20.dp)
-            ){
+            ) {
                 BulledItem(
-                    value = acceptedTerms,
-                    onToggle = { acceptedTerms = !acceptedTerms },
+                    value = registerViewModel.acceptedTerms,
+                    onToggle = {
+                        registerViewModel.acceptedTerms = !registerViewModel.acceptedTerms
+                    },
                     modifier = Modifier.padding(end = 10.dp)
                 )
                 Text(
@@ -112,7 +112,7 @@ class RegisterRoute @Inject constructor() : ComposableRoute {
             }
             Spacer(modifier = Modifier.padding(20.dp))
             FilledButton(
-                onClick = {  },
+                onClick = { registerViewModel.register() },
                 text = "Sign In",
                 backgroundColor = AppTheme.palette.Flamingo,
                 textColor = AppTheme.palette.Overlay0,
