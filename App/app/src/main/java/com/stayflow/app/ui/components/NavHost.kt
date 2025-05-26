@@ -1,5 +1,6 @@
 package com.stayflow.app.ui.components
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,11 +18,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.stayflow.app.ui.navigation.NavController
 import com.stayflow.app.ui.routes.ComposableRoute
 import com.stayflow.app.ui.theme.AppTheme
 
 @Composable
 fun NavHost(currentRoute: ComposableRoute) {
+    val navController = hiltViewModel<NavController>()
+
+    BackHandler {
+        navController.goBack()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()

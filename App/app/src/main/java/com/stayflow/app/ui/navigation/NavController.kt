@@ -1,7 +1,6 @@
 package com.stayflow.app.ui.navigation
 
 import android.util.Log
-import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.stayflow.app.ui.routes.ComposableRoute
@@ -14,8 +13,11 @@ import javax.inject.Inject
 class NavController @Inject constructor(
     private val routeMap: Map<Class<out ComposableRoute>, ComposableRoute>
 ) : ViewModel() {
-    private val _current = mutableStateOf(routeMap[LoginRoute::class.java]!!)
-    val current: State<ComposableRoute> = _current
+    private val history = mutableListOf<HistoryEntry>(
+        HistoryEntry.BasicEntry(LoginRoute())
+    )
+    var current = mutableStateOf(history.last().route)
+        private set
 
     private val _headerHeight = mutableStateOf(current.value.height)
     private val _logoBackGround = mutableStateOf(current.value.logoBackGround)
@@ -27,6 +29,7 @@ class NavController @Inject constructor(
             return
         }
 
+        history.add(HistoryEntry.BasicEntry(route))
         navigate(route)
     }
 
@@ -43,16 +46,62 @@ class NavController @Inject constructor(
             return
         }
 
-        if (route is ConfigurableComposableRoute<*>)
+        if (route is ConfigurableComposableRoute<*>) {
             (route as ConfigurableComposableRoute<T>).setProperties(props)
+            history.add(
+                HistoryEntry.ConfigurableEntry(
+                    route,
+                    route.propClas,
+                    props
+                )
+            )
+        }
 
+        history.add(
+            HistoryEntry.BasicEntry(route)
+        )
         navigate(route)
     }
 
-    private fun navigate(route: ComposableRoute) {
-        _current.value = route
+    @Suppress("UNCHECKED_CAST")
+    private fun <T> applyConfigurable(entry: HistoryEntry.ConfigurableEntry<*>, clazz: Class<T>) {
+        val route = entry.route as ConfigurableComposableRoute<T>
+        val props = clazz.cast(entry.props)
+        if (props != null) {
+            route.setProperties(props)
+        }
+    }
 
+    fun goBack() {
+        if (history.isEmpty()) {
+            return
+        }
+
+        val previousIndex = history.lastIndex - 1
+        if (previousIndex < 0) return
+
+        val previous = history[previousIndex]
+        history.removeAt(history.lastIndex)
+
+        if (previous is HistoryEntry.ConfigurableEntry<*> && previous.props != null) {
+            applyConfigurable(previous, previous.clazz)
+        }
+
+        navigate(previous.route)
+    }
+
+    private fun navigate(route: ComposableRoute) {
+        current.value = route
         _headerHeight.value = route.height
         _logoBackGround.value = route.logoBackGround
     }
+}
+
+private sealed class HistoryEntry(val route: ComposableRoute) {
+    data class BasicEntry(val r: ComposableRoute) : HistoryEntry(r)
+    data class ConfigurableEntry<T>(
+        val r: ConfigurableComposableRoute<T>,
+        val clazz: Class<T>,
+        val props: T,
+    ) : HistoryEntry(r)
 }

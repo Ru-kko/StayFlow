@@ -19,5 +19,6 @@ interface ComposableRoute {
 }
 
 interface ConfigurableComposableRoute<T> : ComposableRoute {
+    val propClas: Class<T>
     fun setProperties(props: T)
 }
